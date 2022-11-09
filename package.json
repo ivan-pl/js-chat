@@ -1,0 +1,19 @@
+{
+  "name": "js-chat",
+  "version": "1.0.0",
+  "description": "Basic chat implementation using Redux",
+  "main": "index.ts",
+  "scripts": {
+    "test": "jest --coverage"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ivan-pl/js-chat.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ivan-pl/js-chat/issues"
+  },
+  "homepage": "https://github.com/ivan-pl/js-chat#readme"
+}
