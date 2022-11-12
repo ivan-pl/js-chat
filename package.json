@@ -65,5 +65,8 @@
     "*.{js,ts}": "eslint --cache --fix",
     "*.scss": "stylelint --fix",
     "*.{js,ts,html,scss,md}": "prettier --write"
+  },
+  "dependencies": {
+    "normalize.css": "^8.0.1"
   }
 }
