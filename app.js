@@ -1,0 +1,1 @@
+(()=>{"use strict";const e=document.createElement("h1");e.innerText="Title",document.body.append(e)})();
