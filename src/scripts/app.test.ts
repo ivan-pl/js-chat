@@ -1,5 +1,17 @@
-import { initApp, addMessages, createMessageElement } from "./app";
-import { IMessage } from "./messagesApi";
+import { initApp, addMessages, createMessageElement, sendMessage } from "./app";
+import { IMessage, sendMessage as sendMessageApi } from "./messagesApi";
+
+window.alert = jest.fn();
+
+jest.mock("./messagesApi", () => {
+  const originalModule = jest.requireActual("./messagesApi");
+
+  return {
+    __esModule: true,
+    ...originalModule,
+    sendMessage: jest.fn().mockResolvedValue(1),
+  };
+});
 
 describe("app", () => {
   describe("initApp", () => {
@@ -69,6 +81,52 @@ describe("app", () => {
       expect(messageHistory.querySelectorAll(".message").length).toBe(
         messages.length
       );
+    });
+  });
+
+  describe("sendMessage", () => {
+    let root: HTMLElement;
+    let app: HTMLElement;
+
+    beforeEach(() => {
+      root = document.createElement("div");
+      app = initApp(root);
+      document.body.append(root);
+    });
+
+    afterEach(() => {
+      document.body.innerHTML = "";
+    });
+
+    it("doesn't send empty message", () => {
+      const nickname = app.querySelector("#message-author") as HTMLInputElement;
+      nickname.value = "Nickname";
+      sendMessage();
+      expect(sendMessageApi).not.toHaveBeenCalled();
+    });
+
+    it("doesn't send noname message", () => {
+      const messageEntryArea = app.querySelector(
+        "#message-entry-area"
+      ) as HTMLTextAreaElement;
+      messageEntryArea.value = "Lorem ipsum";
+      sendMessage();
+      expect(sendMessageApi).not.toHaveBeenCalled();
+    });
+
+    it("calls api", async () => {
+      const nickname = app.querySelector("#message-author") as HTMLInputElement;
+      nickname.value = "Nickname";
+      const messageEntryArea = app.querySelector(
+        "#message-entry-area"
+      ) as HTMLTextAreaElement;
+      messageEntryArea.value = "Lorem ipsum";
+      await sendMessage();
+      expect(sendMessageApi).toHaveBeenCalledTimes(1);
+      expect((sendMessageApi as jest.Mock).mock.calls[0][0]).toEqual({
+        name: nickname.value,
+        message: messageEntryArea.value,
+      });
     });
   });
 });

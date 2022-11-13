@@ -1,4 +1,4 @@
-import { IMessage } from "./messagesApi";
+import { IMessage, sendMessage as sendMessageApi } from "./messagesApi";
 
 export function initApp(root: HTMLElement): HTMLElement {
   const layout = createLayout(); // eslint-disable-line @typescript-eslint/no-use-before-define
@@ -73,4 +73,28 @@ export function createMessageElement(message: IMessage): HTMLElement {
 export function addMessages(root: HTMLElement, messages: IMessage[]): void {
   messages.forEach((message) => root.append(createMessageElement(message)));
   root.scrollTop = root.scrollHeight; // eslint-disable-line no-param-reassign
+}
+
+export async function sendMessage() {
+  const nicknameElem = document.getElementById(
+    "message-author"
+  ) as HTMLInputElement | null;
+  const nickname = nicknameElem?.value;
+  if (!nickname) {
+    alert("You should enter your name");
+    return;
+  }
+
+  const messageElem = document.getElementById(
+    "message-entry-area"
+  ) as HTMLTextAreaElement | null;
+  const messageText = messageElem?.value;
+  if (!messageText) {
+    alert("You should enter a message");
+    return;
+  }
+
+  const message = { name: nickname!, message: messageText! };
+  const result = await sendMessageApi(message);
+  alert(result);
 }
