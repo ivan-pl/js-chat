@@ -1,4 +1,6 @@
-function initApp(root: HTMLElement): HTMLElement {
+import { IMessage } from "./messagesApi";
+
+export function initApp(root: HTMLElement): HTMLElement {
   const layout = createLayout(); // eslint-disable-line @typescript-eslint/no-use-before-define
   root.append(layout);
   return layout;
@@ -44,4 +46,30 @@ function createLayout(): HTMLElement {
   return app;
 }
 
-export default initApp;
+export function createMessageElement(message: IMessage): HTMLElement {
+  const messageElement = document.createElement("article");
+  messageElement.classList.add("message");
+
+  const nicknameElement = document.createElement("div");
+  nicknameElement.classList.add("nickname");
+  nicknameElement.innerText = message.name;
+
+  const timeElement = document.createElement("time");
+  timeElement.classList.add("date");
+  timeElement.innerText = message.date.toLocaleDateString();
+  timeElement.dateTime = message.date.toString();
+
+  const textMessageElement = document.createElement("p");
+  textMessageElement.classList.add("message-text");
+  textMessageElement.innerText = message.message;
+
+  [nicknameElement, timeElement, textMessageElement].forEach((el) =>
+    messageElement.append(el)
+  );
+
+  return messageElement;
+}
+
+export function addMessages(root: HTMLElement, messages: IMessage[]): void {
+  messages.forEach((message) => root.append(createMessageElement(message)));
+}
