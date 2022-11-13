@@ -1,3 +1,59 @@
+:root {
+  font-size: 16px;
+}
+
 * {
   box-sizing: border-box;
+}
+
+body {
+  background-color: white;
+}
+
+.app {
+  width: 350px;
+  height: 600px;
+  background-color: white;
+  padding: 16px;
+}
+
+.message-box {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template:
+    "title title" 30px
+    "message-history message-history" 1fr
+    "message-author ." 24px
+    "message-entry-area send-message" 46px
+    / 4fr 1fr;
+  background-color: #eff2f1;
+  border: 1px solid black;
+  border-radius: 8px;
+  gap: 8px;
+  padding: 6px;
+
+  .title {
+    grid-area: title;
+    margin: auto;
+    font-size: 24px;
+  }
+
+  .send-message {
+    grid-area: send-message;
+  }
+
+  .message-history {
+    grid-area: message-history;
+    background-color: white;
+    border: 1px solid black;
+  }
+
+  .message-entry-area {
+    grid-area: message-entry-area;
+  }
+
+  .message-author {
+    grid-area: message-author;
+  }
 }
