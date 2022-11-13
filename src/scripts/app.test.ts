@@ -44,15 +44,15 @@ describe("app", () => {
       };
       const el = createMessageElement(message);
       expect(el.classList.contains("message")).toBeTruthy();
-      expect((el.querySelector(".date") as HTMLElement).innerText).toBe(
-        message.date.toLocaleDateString()
-      );
-      expect((el.querySelector(".message-text") as HTMLElement).innerText).toBe(
-        message.message
-      );
-      expect((el.querySelector(".nickname") as HTMLElement).innerText).toBe(
-        message.name
-      );
+      expect(
+        (el.querySelector(".message__date") as HTMLElement).innerText
+      ).toBe(message.date.toLocaleDateString());
+      expect(
+        (el.querySelector(".message__text") as HTMLElement).innerText
+      ).toBe(message.message);
+      expect(
+        (el.querySelector(".message__nickname") as HTMLElement).innerText
+      ).toBe(message.name);
     });
   });
 

@@ -2,9 +2,9 @@ import "normalize.css";
 import "./style.scss";
 import { initApp, addMessages } from "./scripts/app";
 
-const messages = Array.from({ length: 7 }, (_, k) => ({
+const messages = Array.from({ length: 15 }, (_, k) => ({
   date: new Date(),
-  message: `Some message ${k}`,
+  message: `Some messagesaddddddd ddddddddddddddddd ddddddddddddddddddddddddddddd ${k}`,
   name: `Some nickname ${k}`,
 }));
 

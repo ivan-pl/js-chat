@@ -51,16 +51,16 @@ export function createMessageElement(message: IMessage): HTMLElement {
   messageElement.classList.add("message");
 
   const nicknameElement = document.createElement("div");
-  nicknameElement.classList.add("nickname");
+  nicknameElement.classList.add("message__nickname");
   nicknameElement.innerText = message.name;
 
   const timeElement = document.createElement("time");
-  timeElement.classList.add("date");
+  timeElement.classList.add("message__date");
   timeElement.innerText = message.date.toLocaleDateString();
   timeElement.dateTime = message.date.toString();
 
   const textMessageElement = document.createElement("p");
-  textMessageElement.classList.add("message-text");
+  textMessageElement.classList.add("message__text");
   textMessageElement.innerText = message.message;
 
   [nicknameElement, timeElement, textMessageElement].forEach((el) =>
@@ -72,4 +72,5 @@ export function createMessageElement(message: IMessage): HTMLElement {
 
 export function addMessages(root: HTMLElement, messages: IMessage[]): void {
   messages.forEach((message) => root.append(createMessageElement(message)));
+  root.scrollTop = root.scrollHeight; // eslint-disable-line no-param-reassign
 }
