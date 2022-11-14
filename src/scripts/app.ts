@@ -20,6 +20,7 @@ function createLayout(): HTMLElement {
 
   const form = document.createElement("form");
   setAttributes(form, "message-box");
+  form.addEventListener("submit", sendMessage); // eslint-disable-line @typescript-eslint/no-use-before-define
 
   const h1 = document.createElement("h1");
   h1.classList.add("title");
@@ -81,7 +82,17 @@ export function addMessages(root: HTMLElement, messages: IMessage[]): void {
   root.scrollTop = root.scrollHeight; // eslint-disable-line no-param-reassign
 }
 
-export async function sendMessage() {
+function resetForm(form: HTMLFormElement) {
+  /* eslint-disable no-param-reassign */
+  (form.querySelector("#send-message") as HTMLButtonElement).disabled = false;
+  (form.querySelector("#message-author") as HTMLInputElement).value = "";
+  (form.querySelector("#message-entry-area") as HTMLTextAreaElement).value = "";
+}
+
+export async function sendMessage(e: Event) {
+  const form = e.target as HTMLFormElement;
+  (form.querySelector("#send-message") as HTMLButtonElement).disabled = true;
+  e.preventDefault();
   const nicknameElem = document.getElementById(
     "message-author"
   ) as HTMLInputElement | null;
@@ -101,8 +112,14 @@ export async function sendMessage() {
   }
 
   const message = { name: nickname!, message: messageText! };
-  const result = await sendMessageApi(message);
-  alert(result);
+  await sendMessageApi(message)
+    .then(() => {
+      alert("Message was sent");
+    })
+    .catch((err) => {
+      alert(`Oooops! Something happened. ${err.toString()}`);
+    });
+  resetForm(form);
 }
 
 export async function updateMessages() {

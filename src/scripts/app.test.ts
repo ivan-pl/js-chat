@@ -99,6 +99,7 @@ describe("app", () => {
   describe("sendMessage", () => {
     let root: HTMLElement;
     let app: HTMLElement;
+    const submitEvent = new Event("submit");
 
     beforeEach(() => {
       root = document.createElement("div");
@@ -113,7 +114,7 @@ describe("app", () => {
     it("doesn't send empty message", () => {
       const nickname = app.querySelector("#message-author") as HTMLInputElement;
       nickname.value = "Nickname";
-      sendMessage();
+      sendMessage(submitEvent);
       expect(sendMessageApi).not.toHaveBeenCalled();
     });
 
@@ -122,7 +123,7 @@ describe("app", () => {
         "#message-entry-area"
       ) as HTMLTextAreaElement;
       messageEntryArea.value = "Lorem ipsum";
-      sendMessage();
+      sendMessage(submitEvent);
       expect(sendMessageApi).not.toHaveBeenCalled();
     });
 
@@ -133,7 +134,7 @@ describe("app", () => {
         "#message-entry-area"
       ) as HTMLTextAreaElement;
       messageEntryArea.value = "Lorem ipsum";
-      await sendMessage();
+      await sendMessage(submitEvent);
       expect(sendMessageApi).toHaveBeenCalledTimes(1);
       expect((sendMessageApi as jest.Mock).mock.calls[0][0]).toEqual({
         name: nickname.value,
