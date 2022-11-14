@@ -1,4 +1,10 @@
-import { IMessage, sendMessage as sendMessageApi } from "./messagesApi";
+import {
+  IMessage,
+  sendMessage as sendMessageApi,
+  getMessagesList,
+} from "./messagesApi";
+import store, { getHistoryLength } from "../store/store";
+import { newMessages } from "../store/actions";
 
 export function initApp(root: HTMLElement): HTMLElement {
   const layout = createLayout(); // eslint-disable-line @typescript-eslint/no-use-before-define
@@ -97,4 +103,15 @@ export async function sendMessage() {
   const message = { name: nickname!, message: messageText! };
   const result = await sendMessageApi(message);
   alert(result);
+}
+
+export async function updateMessages() {
+  const curHistoryLength = getHistoryLength();
+  const messages = await getMessagesList();
+  if (messages.length > curHistoryLength) {
+    const newMessagesSlice = messages.slice(curHistoryLength);
+    store.dispatch(
+      newMessages({ messageHistory: messages, newMessages: newMessagesSlice })
+    );
+  }
 }

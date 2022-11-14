@@ -1,5 +1,16 @@
-import { initApp, addMessages, createMessageElement, sendMessage } from "./app";
-import { IMessage, sendMessage as sendMessageApi } from "./messagesApi";
+import {
+  initApp,
+  addMessages,
+  createMessageElement,
+  sendMessage,
+  updateMessages,
+} from "./app";
+import {
+  IMessage,
+  sendMessage as sendMessageApi,
+  getMessagesList,
+} from "./messagesApi";
+import store from "../store/store";
 
 window.alert = jest.fn();
 
@@ -10,6 +21,7 @@ jest.mock("./messagesApi", () => {
     __esModule: true,
     ...originalModule,
     sendMessage: jest.fn().mockResolvedValue(1),
+    getMessagesList: jest.fn(),
   };
 });
 
@@ -127,6 +139,48 @@ describe("app", () => {
         name: nickname.value,
         message: messageEntryArea.value,
       });
+    });
+  });
+
+  describe("updateMessages", () => {
+    afterEach(() => {
+      jest.restoreAllMocks();
+    });
+
+    it("is a function", () => {
+      expect(updateMessages).toBeInstanceOf(Function);
+    });
+
+    it("dispatches after receiving new messages", async () => {
+      (getMessagesList as jest.Mock)
+        .mockResolvedValueOnce([
+          { name: "A", message: "A message", date: new Date() },
+        ])
+        .mockResolvedValue([
+          { name: "A", message: "A message", date: new Date() },
+          { name: "B", message: "B message", date: new Date() },
+        ]);
+
+      const spyDispatch = jest.spyOn(store, "dispatch");
+      await updateMessages();
+      expect(spyDispatch).toHaveBeenCalledTimes(1);
+
+      await updateMessages();
+      expect(spyDispatch).toHaveBeenCalledTimes(2);
+    });
+
+    it("doesn't dispatch without new messages", async () => {
+      (getMessagesList as jest.Mock).mockResolvedValue([
+        { name: "A", message: "A message", date: new Date() },
+        { name: "B", message: "B message", date: new Date() },
+      ]);
+
+      const spyDispatch = jest.spyOn(store, "dispatch");
+      await updateMessages();
+      expect(spyDispatch).not.toHaveBeenCalled();
+
+      await updateMessages();
+      expect(spyDispatch).not.toHaveBeenCalled();
     });
   });
 });
