@@ -67,6 +67,7 @@
     "*.{js,ts,html,scss,md}": "prettier --write"
   },
   "dependencies": {
-    "normalize.css": "^8.0.1"
+    "normalize.css": "^8.0.1",
+    "redux": "^4.2.0"
   }
 }
