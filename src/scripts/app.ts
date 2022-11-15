@@ -3,12 +3,78 @@ import {
   sendMessage as sendMessageApi,
   getMessagesList,
 } from "./messagesApi";
-import store, { getHistoryLength } from "../store/store";
+import store, { getHistoryLength, getNewMessages } from "../store/store";
 import { newMessages } from "../store/actions";
 
-export function initApp(root: HTMLElement): HTMLElement {
+export function createMessageElement(message: IMessage): HTMLElement {
+  const messageElement = document.createElement("article");
+  messageElement.classList.add("message");
+
+  const nicknameElement = document.createElement("div");
+  nicknameElement.classList.add("message__nickname");
+  nicknameElement.innerText = message.name;
+
+  const timeElement = document.createElement("time");
+  timeElement.classList.add("message__date");
+  timeElement.innerText = message.date.toLocaleDateString();
+  timeElement.dateTime = message.date.toString();
+
+  const textMessageElement = document.createElement("p");
+  textMessageElement.classList.add("message__text");
+  textMessageElement.innerText = message.message;
+
+  [nicknameElement, timeElement, textMessageElement].forEach((el) =>
+    messageElement.append(el)
+  );
+
+  return messageElement;
+}
+
+export function addMessages(root: HTMLElement, messages: IMessage[]): void {
+  messages.forEach((message) => root.append(createMessageElement(message)));
+  root.scrollTop = root.scrollHeight; // eslint-disable-line no-param-reassign
+}
+
+export function filterMessages(messages: { [key: string]: any }[]): IMessage[] {
+  const res: IMessage[] = [];
+  // eslint-disable-next-line no-restricted-syntax
+  for (const message of messages) {
+    if (["name", "message", "date"].every((prop) => prop in message)) {
+      res.push(message as IMessage);
+    }
+  }
+  return res;
+}
+
+function handleMessages() {
+  const messages = getNewMessages();
+  const filteredMessages = filterMessages(messages);
+  if (filteredMessages.length > 0) {
+    const messageHistoryEl = document.getElementById("message-history")!;
+    addMessages(messageHistoryEl, filteredMessages);
+  }
+}
+
+export async function updateMessages() {
+  const curHistoryLength = getHistoryLength();
+  const messages = await getMessagesList();
+  if (messages.length > curHistoryLength) {
+    const newMessagesSlice = messages.slice(curHistoryLength);
+    store.dispatch(
+      newMessages({ messageHistory: messages, newMessages: newMessagesSlice })
+    );
+  }
+}
+
+export function initApp(root: HTMLElement, initListening = false): HTMLElement {
   const layout = createLayout(); // eslint-disable-line @typescript-eslint/no-use-before-define
   root.append(layout);
+  if (initListening) {
+    store.subscribe(handleMessages);
+    setInterval(() => updateMessages(), 3000);
+    updateMessages();
+  }
+
   return layout;
 }
 
@@ -53,35 +119,6 @@ function createLayout(): HTMLElement {
   return app;
 }
 
-export function createMessageElement(message: IMessage): HTMLElement {
-  const messageElement = document.createElement("article");
-  messageElement.classList.add("message");
-
-  const nicknameElement = document.createElement("div");
-  nicknameElement.classList.add("message__nickname");
-  nicknameElement.innerText = message.name;
-
-  const timeElement = document.createElement("time");
-  timeElement.classList.add("message__date");
-  timeElement.innerText = message.date.toLocaleDateString();
-  timeElement.dateTime = message.date.toString();
-
-  const textMessageElement = document.createElement("p");
-  textMessageElement.classList.add("message__text");
-  textMessageElement.innerText = message.message;
-
-  [nicknameElement, timeElement, textMessageElement].forEach((el) =>
-    messageElement.append(el)
-  );
-
-  return messageElement;
-}
-
-export function addMessages(root: HTMLElement, messages: IMessage[]): void {
-  messages.forEach((message) => root.append(createMessageElement(message)));
-  root.scrollTop = root.scrollHeight; // eslint-disable-line no-param-reassign
-}
-
 function resetForm(form: HTMLFormElement) {
   /* eslint-disable no-param-reassign */
   (form.querySelector("#send-message") as HTMLButtonElement).disabled = false;
@@ -112,34 +149,8 @@ export async function sendMessage(e: Event) {
   }
 
   const message = { name: nickname!, message: messageText! };
-  await sendMessageApi(message)
-    .then(() => {
-      alert("Message was sent");
-    })
-    .catch((err) => {
-      alert(`Oooops! Something happened. ${err.toString()}`);
-    });
+  await sendMessageApi(message).catch((err) => {
+    alert(`Oooops! Something happened. ${err.toString()}`);
+  });
   resetForm(form);
-}
-
-export async function updateMessages() {
-  const curHistoryLength = getHistoryLength();
-  const messages = await getMessagesList();
-  if (messages.length > curHistoryLength) {
-    const newMessagesSlice = messages.slice(curHistoryLength);
-    store.dispatch(
-      newMessages({ messageHistory: messages, newMessages: newMessagesSlice })
-    );
-  }
-}
-
-export function filterMessages(messages: { [key: string]: any }[]) {
-  const res = [];
-  // eslint-disable-next-line no-restricted-syntax
-  for (const message of messages) {
-    if (["name", "message", "date"].every((prop) => prop in message)) {
-      res.push(message);
-    }
-  }
-  return res;
 }
