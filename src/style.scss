@@ -48,6 +48,8 @@ body {
     background-color: white;
     border: 1px solid black;
     overflow-y: auto;
+    overflow-x: hidden;
+    word-wrap: break-word;
     padding: 8px;
     display: flex;
     flex-flow: column nowrap;
