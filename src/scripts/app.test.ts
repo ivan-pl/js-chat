@@ -2,7 +2,6 @@ import {
   initApp,
   addMessages,
   createMessageElement,
-  sendMessage,
   updateMessages,
 } from "./app";
 import {
@@ -99,11 +98,13 @@ describe("app", () => {
   describe("sendMessage", () => {
     let root: HTMLElement;
     let app: HTMLElement;
+    let form: HTMLFormElement;
     const submitEvent = new Event("submit");
 
     beforeEach(() => {
       root = document.createElement("div");
       app = initApp(root);
+      form = app.querySelector("#message-box") as HTMLFormElement;
       document.body.append(root);
     });
 
@@ -114,7 +115,7 @@ describe("app", () => {
     it("doesn't send empty message", () => {
       const nickname = app.querySelector("#message-author") as HTMLInputElement;
       nickname.value = "Nickname";
-      sendMessage(submitEvent);
+      form.dispatchEvent(submitEvent);
       expect(sendMessageApi).not.toHaveBeenCalled();
     });
 
@@ -123,22 +124,22 @@ describe("app", () => {
         "#message-entry-area"
       ) as HTMLTextAreaElement;
       messageEntryArea.value = "Lorem ipsum";
-      sendMessage(submitEvent);
+      form.dispatchEvent(submitEvent);
       expect(sendMessageApi).not.toHaveBeenCalled();
     });
 
     it("calls api", async () => {
-      const nickname = app.querySelector("#message-author") as HTMLInputElement;
-      nickname.value = "Nickname";
-      const messageEntryArea = app.querySelector(
-        "#message-entry-area"
-      ) as HTMLTextAreaElement;
-      messageEntryArea.value = "Lorem ipsum";
-      await sendMessage(submitEvent);
+      const authorName = "Nickname";
+      const messageText = "Lorem ipsum";
+      (app.querySelector("#message-author") as HTMLInputElement).value =
+        authorName;
+      (app.querySelector("#message-entry-area") as HTMLTextAreaElement).value =
+        messageText;
+      form.dispatchEvent(submitEvent);
       expect(sendMessageApi).toHaveBeenCalledTimes(1);
       expect((sendMessageApi as jest.Mock).mock.calls[0][0]).toEqual({
-        name: nickname.value,
-        message: messageEntryArea.value,
+        name: authorName,
+        message: messageText,
       });
     });
   });
