@@ -132,3 +132,14 @@ export async function updateMessages() {
     );
   }
 }
+
+export function filterMessages(messages: { [key: string]: any }[]) {
+  const res = [];
+  // eslint-disable-next-line no-restricted-syntax
+  for (const message of messages) {
+    if (["name", "message", "date"].every((prop) => prop in message)) {
+      res.push(message);
+    }
+  }
+  return res;
+}

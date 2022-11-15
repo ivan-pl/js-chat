@@ -3,6 +3,7 @@ import {
   addMessages,
   createMessageElement,
   updateMessages,
+  filterMessages,
 } from "./app";
 import {
   IMessage,
@@ -183,6 +184,25 @@ describe("app", () => {
 
       await updateMessages();
       expect(spyDispatch).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("filterMessages", () => {
+    it("is a function", () => {
+      expect(filterMessages).toBeInstanceOf(Function);
+    });
+
+    it("calls addMessages only with correct messages", () => {
+      const messages = [
+        { AuthorName: "B", data: "B message", date: new Date() },
+        { name: "A", message: "A message", date: new Date() },
+        { message: "A message", date: new Date() },
+        { name: "A", message: "A message" },
+        { message: "A message" },
+        { name: "B", message: "B message", date: new Date() },
+      ];
+
+      expect(filterMessages(messages)).toEqual([messages[1], messages[5]]);
     });
   });
 });
