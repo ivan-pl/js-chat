@@ -58,6 +58,7 @@ body {
 
   .message-entry-area {
     grid-area: message-entry-area;
+    resize: none;
   }
 
   .message-author {
