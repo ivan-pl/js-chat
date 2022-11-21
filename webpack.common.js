@@ -8,7 +8,7 @@ module.exports = {
     app: path.join(__dirname, "src", "index.ts"),
   },
   output: {
-    filename: "[name].js",
+    filename: "[name].[contenthash].js",
     path: path.resolve(__dirname, "dist"),
     clean: true,
   },
