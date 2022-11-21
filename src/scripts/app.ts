@@ -3,7 +3,8 @@ import {
   sendMessage as sendMessageApi,
   getMessagesList,
 } from "./messagesApi";
-import store, { getHistoryLength, getNewMessages } from "../store/store";
+import store from "../store/store";
+import { getHistoryLength, getNewMessages } from "../store/selectors";
 import { newMessages } from "../store/actions";
 import { createMessageElement, createLayout, resetForm } from "./domController";
 
