@@ -1,3 +1,116 @@
+:root {
+  font-size: 16px;
+}
+
 * {
   box-sizing: border-box;
+}
+
+body {
+  background-color: white;
+}
+
+.app {
+  width: 350px;
+  height: 600px;
+  background-color: white;
+  padding: 16px;
+}
+
+.message-box {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template:
+    "title title" 30px
+    "message-history message-history" 1fr
+    "message-author ." 24px
+    "message-entry-area send-message" 46px
+    / 4fr 1fr;
+  background-color: #eff2f1;
+  border: 1px solid black;
+  border-radius: 8px;
+  gap: 8px;
+  padding: 6px;
+
+  .title {
+    grid-area: title;
+    margin: auto;
+    font-size: 24px;
+  }
+
+  .send-message {
+    grid-area: send-message;
+  }
+
+  .message-history {
+    grid-area: message-history;
+    background-color: white;
+    border: 1px solid black;
+    overflow-y: auto;
+    overflow-x: hidden;
+    word-wrap: break-word;
+    padding: 8px;
+    display: flex;
+    flex-flow: column nowrap;
+    gap: 8px;
+  }
+
+  .message-entry-area {
+    grid-area: message-entry-area;
+    resize: none;
+  }
+
+  .message-author {
+    grid-area: message-author;
+  }
+
+  .error {
+    animation: shake 0.2s ease-in-out 0s 2;
+    box-shadow: 0 0 0.5em red;
+  }
+}
+
+.message {
+  background-color: aliceblue;
+  width: 100%;
+  height: fit-content;
+  padding: 6px;
+  border-radius: 8px;
+  display: grid;
+  grid-template:
+    "nickname date" min-content
+    "text text" 1fr / 1fr 80px;
+
+  &__nickname {
+    grid-area: nickname;
+    font-weight: 600;
+  }
+
+  &__date {
+    grid-area: date;
+  }
+
+  &__text {
+    grid-area: text;
+    margin: 0;
+  }
+}
+
+@keyframes shake {
+  0% {
+    margin-left: 0;
+  }
+
+  25% {
+    margin-left: 0.5rem;
+  }
+
+  75% {
+    margin-left: -0.5rem;
+  }
+
+  100% {
+    margin-left: 0;
+  }
 }

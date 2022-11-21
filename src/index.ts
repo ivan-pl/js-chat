@@ -1,7 +1,5 @@
 import "normalize.css";
 import "./style.scss";
+import { initApp } from "./scripts/app";
 
-const h1 = document.createElement("h1");
-h1.innerText = "Title";
-
-document.body.append(h1);
+initApp(document.body, true);
