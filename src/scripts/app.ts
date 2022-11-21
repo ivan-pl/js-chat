@@ -5,7 +5,7 @@ import {
 } from "./messagesApi";
 import store, { getHistoryLength, getNewMessages } from "../store/store";
 import { newMessages } from "../store/actions";
-import { createMessageElement, createLayout } from "./domController";
+import { createMessageElement, createLayout, resetForm } from "./domController";
 
 export function addMessages(root: HTMLElement, messages: IMessage[]): void {
   messages.forEach((message) => root.append(createMessageElement(message)));
@@ -52,13 +52,6 @@ export function initApp(root: HTMLElement, initListening = false): HTMLElement {
   }
 
   return app;
-}
-
-function resetForm(form: HTMLFormElement) {
-  /* eslint-disable no-param-reassign */
-  (form.querySelector("#send-message") as HTMLButtonElement).disabled = false;
-  (form.querySelector("#message-author") as HTMLInputElement).value = "";
-  (form.querySelector("#message-entry-area") as HTMLTextAreaElement).value = "";
 }
 
 export async function sendMessage(e: Event) {

@@ -1,4 +1,4 @@
-import { createMessageElement, createLayout } from "./domController";
+import { createMessageElement, createLayout, resetForm } from "./domController";
 import { IMessage } from "./messagesApi";
 
 describe("createMessageElement", () => {
@@ -51,5 +51,42 @@ describe("createLayout", () => {
     expect(app.querySelector("#message-entry-area")).toBeInstanceOf(
       HTMLTextAreaElement
     );
+  });
+});
+
+describe("resetForm", () => {
+  let form: HTMLFormElement;
+  let input: HTMLInputElement;
+  let textArea: HTMLTextAreaElement;
+  let button: HTMLButtonElement;
+
+  beforeEach(() => {
+    const app = createLayout(document.createElement("div"), jest.fn());
+    form = app.querySelector("form")!;
+    input = app.querySelector("input")!;
+    textArea = app.querySelector("textarea")!;
+    button = app.querySelector("button")!;
+
+    input.value = "Lorem ipsum";
+    textArea.value = "Lorem ipsum";
+    button.disabled = true;
+  });
+
+  it("clears input", () => {
+    expect(input.value).not.toBe("");
+    resetForm(form);
+    expect(input.value).toBe("");
+  });
+
+  it("clears textArea", () => {
+    expect(textArea.value).not.toBe("");
+    resetForm(form);
+    expect(textArea.value).toBe("");
+  });
+
+  it("enables button", () => {
+    expect(button.disabled).toBe(true);
+    resetForm(form);
+    expect(button.disabled).toBe(false);
   });
 });

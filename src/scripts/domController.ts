@@ -69,3 +69,10 @@ export function createLayout(
 
   return app;
 }
+
+export function resetForm(form: HTMLFormElement) {
+  /* eslint-disable no-param-reassign */
+  (form.querySelector("#send-message") as HTMLButtonElement).disabled = false;
+  (form.querySelector("#message-author") as HTMLInputElement).value = "";
+  (form.querySelector("#message-entry-area") as HTMLTextAreaElement).value = "";
+}
