@@ -5,8 +5,11 @@ import {
   getMessagesList,
 } from "./messagesApi";
 import store from "../store/store";
+import * as domController from "./domController";
 
 window.alert = jest.fn();
+
+const createLayoutMocked = jest.spyOn(domController, "createLayout");
 
 jest.mock("./messagesApi", () => {
   const originalModule = jest.requireActual("./messagesApi");
@@ -22,34 +25,19 @@ jest.mock("./messagesApi", () => {
 describe("app", () => {
   describe("initApp", () => {
     let root: HTMLElement;
-    let app: HTMLElement;
 
     beforeEach(() => {
       root = document.createElement("div");
-      app = initApp(root);
     });
 
-    it("returns element with class app", () => {
-      expect(app).toBeInstanceOf(HTMLElement);
-      expect(app.classList.contains("app")).toBeTruthy();
+    it("calls createLayout with root element", () => {
+      initApp(root);
+      expect(createLayoutMocked).toHaveBeenCalledWith(root, expect.anything());
     });
 
-    it("appends to the root element", () => {
-      expect(root.querySelector(".app")).not.toBeNull();
-    });
-
-    it("has layout", () => {
-      expect(app.querySelector("#message-box")).toBeInstanceOf(HTMLFormElement);
-      expect(app.querySelector("#send-message")).toBeInstanceOf(
-        HTMLButtonElement
-      );
-      expect(app.querySelector("#message-history")).toBeInstanceOf(HTMLElement);
-      expect(app.querySelector("#message-author")).toBeInstanceOf(
-        HTMLInputElement
-      );
-      expect(app.querySelector("#message-entry-area")).toBeInstanceOf(
-        HTMLTextAreaElement
-      );
+    it("returns app element", () => {
+      const app = initApp(root);
+      expect(createLayoutMocked).toHaveReturnedWith(app);
     });
   });
 
