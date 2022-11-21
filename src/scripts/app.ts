@@ -13,12 +13,33 @@ export function addMessages(root: HTMLElement, messages: IMessage[]): void {
   root.scrollTop = root.scrollHeight; // eslint-disable-line no-param-reassign
 }
 
-export function filterMessages(messages: { [key: string]: any }[]): IMessage[] {
+function isMessage(message: unknown): message is IMessage {
+  if (typeof message !== "object" || message === null) {
+    return false;
+  }
+
+  if (
+    !["name", "message"].every(
+      (prop) => prop in message && typeof prop === "string"
+    )
+  ) {
+    return false;
+  }
+
+  const date = (message as { date?: any })?.date;
+  if (!date || !(date instanceof Date) || Number.isNaN(Number(date))) {
+    return false;
+  }
+
+  return true;
+}
+
+export function filterMessages(messages: unknown[]): IMessage[] {
   const res: IMessage[] = [];
   // eslint-disable-next-line no-restricted-syntax
   for (const message of messages) {
-    if (["name", "message", "date"].every((prop) => prop in message)) {
-      res.push(message as IMessage);
+    if (isMessage(message)) {
+      res.push(message);
     }
   }
   return res;
