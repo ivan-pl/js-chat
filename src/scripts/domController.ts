@@ -7,19 +7,18 @@ export function createMessageElement(message: IMessage): HTMLElement {
   const nicknameElement = document.createElement("div");
   nicknameElement.classList.add("message__nickname");
   nicknameElement.innerText = message.name;
+  messageElement.append(nicknameElement);
 
   const timeElement = document.createElement("time");
   timeElement.classList.add("message__date");
   timeElement.innerText = message.date.toLocaleDateString();
   timeElement.dateTime = message.date.toString();
+  messageElement.append(timeElement);
 
   const textMessageElement = document.createElement("p");
   textMessageElement.classList.add("message__text");
   textMessageElement.innerText = message.message;
-
-  [nicknameElement, timeElement, textMessageElement].forEach((el) =>
-    messageElement.append(el)
-  );
+  messageElement.append(textMessageElement);
 
   return messageElement;
 }
@@ -28,14 +27,17 @@ export function createLayout(
   root: HTMLElement,
   onSendMessage: (e: Event) => void
 ): HTMLElement {
-  const setAttributes = (el: HTMLElement, name: string): void => {
+  const configureElement = (el: HTMLElement, name: string): void => {
     el.id = name; // eslint-disable-line no-param-reassign
     el.classList.add(name);
+    if (name !== "message-box") {
+      form.append(el); // eslint-disable-line @typescript-eslint/no-use-before-define
+    }
   };
 
   const form = document.createElement("form");
-  setAttributes(form, "message-box");
-  form.addEventListener("submit", onSendMessage); // eslint-disable-line @typescript-eslint/no-use-before-define
+  configureElement(form, "message-box");
+  form.addEventListener("submit", onSendMessage);
 
   const h1 = document.createElement("h1");
   h1.classList.add("title");
@@ -43,23 +45,19 @@ export function createLayout(
 
   const buttonSend = document.createElement("button");
   buttonSend.innerText = "Send";
-  setAttributes(buttonSend, "send-message");
+  configureElement(buttonSend, "send-message");
 
   const historySection = document.createElement("section");
-  setAttributes(historySection, "message-history");
+  configureElement(historySection, "message-history");
 
   const inputAuthor = document.createElement("input");
   inputAuthor.setAttribute("type", "text");
   inputAuthor.setAttribute("placeholder", "Your name");
-  setAttributes(inputAuthor, "message-author");
+  configureElement(inputAuthor, "message-author");
 
   const messageEntryArea = document.createElement("textarea");
   messageEntryArea.setAttribute("placeholder", "Message text");
-  setAttributes(messageEntryArea, "message-entry-area");
-
-  [h1, buttonSend, historySection, inputAuthor, messageEntryArea].forEach(
-    (el) => form.append(el)
-  );
+  configureElement(messageEntryArea, "message-entry-area");
 
   const app = document.createElement("div");
   app.classList.add("app");
