@@ -6,7 +6,12 @@ import {
 import store from "../store/store";
 import { getHistoryLength, getNewMessages } from "../store/selectors";
 import { newMessages } from "../store/actions";
-import { createMessageElement, createLayout, resetForm } from "./domController";
+import {
+  createMessageElement,
+  createLayout,
+  resetForm,
+  addErrorStyle,
+} from "./domController";
 
 export function addMessages(root: HTMLElement, messages: IMessage[]): void {
   messages.forEach((message) => root.append(createMessageElement(message)));
@@ -85,7 +90,7 @@ export async function sendMessage(e: Event) {
   ) as HTMLInputElement | null;
   const nickname = nicknameElem?.value;
   if (!nickname) {
-    alert("You should enter your name");
+    addErrorStyle(nicknameElem!);
     return;
   }
 
@@ -94,7 +99,7 @@ export async function sendMessage(e: Event) {
   ) as HTMLTextAreaElement | null;
   const messageText = messageElem?.value;
   if (!messageText) {
-    alert("You should enter a message");
+    addErrorStyle(messageElem!);
     return;
   }
 

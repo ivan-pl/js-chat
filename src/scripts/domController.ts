@@ -23,6 +23,18 @@ export function createMessageElement(message: IMessage): HTMLElement {
   return messageElement;
 }
 
+function removeError(button: HTMLButtonElement, e: Event) {
+  const el = e.target as HTMLElement;
+  el.classList.remove("error");
+  button.disabled = false; // eslint-disable-line no-param-reassign
+}
+
+export function addErrorStyle(el: HTMLElement) {
+  el.classList.add("error");
+  (document.getElementById("send-message") as HTMLButtonElement).disabled =
+    true;
+}
+
 export function createLayout(
   root: HTMLElement,
   onSendMessage: (e: Event) => void
@@ -53,10 +65,15 @@ export function createLayout(
   const inputAuthor = document.createElement("input");
   inputAuthor.setAttribute("type", "text");
   inputAuthor.setAttribute("placeholder", "Your name");
+  inputAuthor.addEventListener("input", removeError.bind(null, buttonSend));
   configureElement(inputAuthor, "message-author");
 
   const messageEntryArea = document.createElement("textarea");
   messageEntryArea.setAttribute("placeholder", "Message text");
+  messageEntryArea.addEventListener(
+    "input",
+    removeError.bind(null, buttonSend)
+  );
   configureElement(messageEntryArea, "message-entry-area");
 
   const app = document.createElement("div");
